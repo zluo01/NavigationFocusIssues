@@ -16,6 +16,8 @@ function App() {
     return 'test123';
   });
 
+  console.log('focus');
+
   useNavigationComponentDidAppear(e => {
     console.log('Appear', e);
     refetch();
