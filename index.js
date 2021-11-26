@@ -1,9 +1,40 @@
 /**
  * @format
  */
-
-import {AppRegistry} from 'react-native';
+import React from 'react';
+import {Navigation} from 'react-native-navigation';
 import App from './App';
-import {name as appName} from './app.json';
+import {NavigationProvider} from 'react-native-navigation-hooks';
+import {QueryClientProvider} from 'react-query';
+import {getQueryClient} from './query';
 
-AppRegistry.registerComponent(appName, () => App);
+const queryClient = getQueryClient();
+
+Navigation.registerComponent(
+  'com.myApp.WelcomeScreen',
+  () => props => {
+    return (
+      <NavigationProvider value={{componentId: props.componentId}}>
+        <QueryClientProvider client={queryClient}>
+          <App {...props} />
+        </QueryClientProvider>
+      </NavigationProvider>
+    );
+  },
+  () => App,
+);
+Navigation.events().registerAppLaunchedListener(() => {
+  Navigation.setRoot({
+    root: {
+      stack: {
+        children: [
+          {
+            component: {
+              name: 'com.myApp.WelcomeScreen',
+            },
+          },
+        ],
+      },
+    },
+  });
+});
